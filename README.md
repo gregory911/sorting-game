@@ -6,7 +6,7 @@
 
 # Sorting Game
 
-This is small educational project built on Svelte.
+This is small educational project built on Svelte & [Svelte DND Action](https://github.com/isaacHagoel/svelte-dnd-action).
 Idea: Catherine L.
 Developer: Greg G.
 
