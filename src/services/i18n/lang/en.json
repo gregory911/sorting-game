@@ -1,0 +1,8 @@
+{
+  "actions": {
+    "whitePaper": "View White paper"
+  },
+  "hello": "Hello {name}",
+  "username": "Username",
+  "componentExample": "This is a section component"
+}
