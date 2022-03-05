@@ -13,16 +13,13 @@
         border-radius: 10px;
         display: flex;
         flex-shrink: 0;
-        width: 100%;
-        /*height: 50vh;*/
+        width: var(--item-size);
+        height: var(--item-size);
         justify-content: center;
-        /*margin-right: 1.25rem; // TODO: Remove */
-        padding: 1rem;
         position: relative;
         scroll-snap-align: start;
         transform: scale(1);
         transform-origin: center center;
         transition: transform 0.5s;
-        /*width: 50vw;*/
     }
 </style>

@@ -1,136 +1,196 @@
 <script lang="ts">
-    import { dndzone } from 'svelte-dnd-action';
-    import './services/i18n/i18n';
-    import {
-        _,
-        isLoading,
-    } from 'svelte-i18n';
-    import Section from './components/landing/section.svelte';
+  import { dndzone } from 'svelte-dnd-action';
+  import './services/i18n/i18n';
+  import {
+    _,
+    isLoading,
+  } from 'svelte-i18n';
+  import Section from './components/landing/section.svelte';
 
-    let idx = 0;
-    const flipDurationMs = 200;
-    let garbages = {
-        "garbage1": {
-            id: "garbage1",
-            items: [
-                {
-                    "id": "item1",
-                    "name": "Item1-Garbage1",
-                },
-                {
-                    "id": "item2",
-                    "name": "Item2-Garbage1",
-                },
-                {
-                    "id": "item3",
-                    "name": "Item3-Garbage1",
-                },
-            ]
+  const flipDurationMs = 200;
+  let garbages = {
+    "garbage1": {
+      "id": "garbage1",
+      "name": "garbage1",
+      "items": [
+        {
+          "id": "item1",
+          "name": "Item1-Garbage1",
         },
-        "garbage2": {
-            id: "garbage2",
-            items: [
-                {
-                    "id": "item4",
-                    "name": "Item1-Garbage2",
-                },
-                {
-                    "id": "item5",
-                    "name": "Item2-Garbage2",
-                },
-                {
-                    "id": "item6",
-                    "name": "Item3-Garbage2",
-                },
-            ]
+        {
+          "id": "item2",
+          "name": "Item2-Garbage1",
         },
-        "garbage3": {
-            id: "garbage3",
-            items: [
-                {
-                    "id": "item7",
-                    "name": "Item1-Garbage3",
-                },
-                {
-                    "id": "item8",
-                    "name": "Item2-Garbage3",
-                },
-                {
-                    "id": "item9",
-                    "name": "Item3-Garbage3",
-                },
-            ]
-        }
-    };
-    let garbageList = Object.values(garbages).map(
-        (garbage) => {
-            return {
-				id: garbage.id,
-				items: []
-			};
-		}
-    );
-    let garbageItems = Object.values(garbages).map((garbage) => {
-      return garbage.items;
-    }).flat();
-    console.log('TEST ITEMS', garbageList, garbageItems);
+        {
+          "id": "item3",
+          "name": "Item3-Garbage1",
+        },
+      ],
+    },
+    "garbage2": {
+      "id": "garbage2",
+      "name": "garbage2",
+      "items": [
+        {
+          "id": "item4",
+          "name": "Item1-Garbage2",
+        },
+        {
+          "id": "item5",
+          "name": "Item2-Garbage2",
+        },
+        {
+          "id": "item6",
+          "name": "Item3-Garbage2",
+        },
+      ],
+    },
+    "garbage3": {
+      "id": "garbage3",
+      "name": "garbage3",
+      "items": [
+        {
+          "id": "item7",
+          "name": "Item1-Garbage3",
+        },
+        {
+          "id": "item8",
+          "name": "Item2-Garbage3",
+        },
+        {
+          "id": "item9",
+          "name": "Item3-Garbage3",
+        },
+      ],
+    },
+    "garbage4": {
+      "id": "garbage4",
+      "name": "garbage4",
+      "items": [
+        {
+          "id": "item10",
+          "name": "Item1-Garbage4",
+        },
+        {
+          "id": "item11",
+          "name": "Item2-Garbage4",
+        },
+        {
+          "id": "item12",
+          "name": "Item3-Garbage4",
+        },
+      ],
+    },
+    "garbage5": {
+      "id": "garbage5",
+      "name": "garbage5",
+      "items": [
+        {
+          "id": "item14",
+          "name": "Item1-garbage5",
+        },
+        {
+          "id": "item15",
+          "name": "Item2-garbage5",
+        },
+        {
+          "id": "item16",
+          "name": "Item3-garbage5",
+        },
+      ],
+    },
+  };
+  let garbageList = Object.values(garbages).map(
+    (garbage) => {
+      return {
+        id: garbage.id,
+        items: []
+      };
+    }
+  );
+  let garbageItems = Object.values(garbages).map((garbage) => {
+    return garbage.items;
+  }).flat();
 
-    const handleGarbageItems = (gid, e) => {
-      console.log('HANDLING GARBAGE ITEMS', e, e.detail, e.detail.items ? 'GOT GARBAGE ITEMS' : 'NO GARBAGE ITEMS');
-      const garbageIdx = garbageList.findIndex(g => g.id === gid);
-      console.log(
-        'CHECK GARBAGE',
-        garbageIdx,
-        garbageList[garbageIdx],
-        garbageList[garbageIdx].items ? 'FOUND GARBAGE ITEMS' : 'NO GARBAGE ITEMS FOUND'
-      );
-      garbageList[garbageIdx].items = e.detail.items;
-      garbageList = [...garbageList];
-      console.log('UPDATED GARBAGE LIST', garbageList);
-    }
-    function handleItems(e) {
-      console.log('HANDLING ITEMS', e, e.detail, e.detail.items ? 'GOT ITEMS' : 'NO ITEMS');
-      garbageItems = [...e.detail.items];
-      console.log('UPDATED ITEMS LIST', garbageItems);
-    }
+  const totalGarbageQty = Object.keys(garbages).length,
+        totalItemQty = garbageItems.length,
+        itemSize = '70vw',
+        itemPadding = '0.5rem',
+        garbageSpacing = '2rem';
+  let styles = {
+    'total-item-qty': totalItemQty,
+    'total-garbage-qty': totalGarbageQty,
+    'item-size': `calc(${itemSize} / ${totalGarbageQty})`,
+    'item-padding': itemPadding,
+    'garbage-spacing': garbageSpacing,
+    'item-size-padded': `calc((${itemSize} / ${totalGarbageQty}) + ${itemPadding})`,
+  };
+
+  $: cssVarStyles = Object.entries(styles)
+    .map(([key, value]) => `--${key}:${value}`)
+    .join(';');
+  // $: cssVarStyles = `--total-item-qty:${garbageItems.length};`;
+  console.log('TEST ITEMS', garbageList, garbageItems, );
+
+  const handleGarbageItems = (gid, e) => {
+    // console.log('HANDLING GARBAGE ITEMS', e, e.detail, e.detail.items ? 'GOT GARBAGE ITEMS' : 'NO GARBAGE ITEMS');
+    const garbageIdx = garbageList.findIndex(g => g.id === gid);
+    // console.log(
+    //   'CHECK GARBAGE',
+    //   garbageIdx,
+    //   garbageList[garbageIdx],
+    //   garbageList[garbageIdx].items ? 'FOUND GARBAGE ITEMS' : 'NO GARBAGE ITEMS FOUND'
+    // );
+    garbageList[garbageIdx].items = e.detail.items;
+    garbageList = [...garbageList];
+    console.log('UPDATED GARBAGE LIST', garbageList, garbages);
+  }
+  function handleItems(e) {
+    // console.log('HANDLING ITEMS', e, e.detail);
+    // console.log('TEST DETAIL ITEMS', e.detail.items ? 'GOT ITEMS' : 'NO ITEMS');
+    garbageItems = [...e.detail.items];
+    console.log('UPDATED ITEMS LIST', garbageItems, garbages);
+  }
 </script>
 
 {#if $isLoading}
     Please wait...
 {:else}
-    <main>
+    <main style="{cssVarStyles}">
         <h1>{$_('appTitle')}</h1>
         <div class="itemContainer">
-            {#if (garbageItems.length === 0)}
-                <p>No more items</p>
-            {:else}
-                <div
-                    class="itemCarousel"
-                    use:dndzone={{items: garbageItems, flipDurationMs}} on:consider={handleItems} on:finalize={handleItems}
-                >
-                {#each garbageItems as garbageItem (garbageItem.id)}
-                    <Section>
-                        {garbageItem.name}
-                    </Section>
-                {/each}
-                </div>
-            {/if}
+            <div
+                class="itemCarousel"
+                use:dndzone={{items: garbageItems, flipDurationMs, dragDisabled: garbageItems.length === 0}} on:consider={handleItems} on:finalize={handleItems}
+            >
+                {#if (!garbageItems.length)}
+                    <div class="emptyItems">
+                        <p>No more items</p>
+                    </div>
+                {:else}
+                    {#each garbageItems as garbageItem (garbageItem.id)}
+                        <Section>
+                            {garbageItem.name}
+                        </Section>
+                    {/each}
+                {/if}
+            </div>
         </div>
         <div class="garbageContainer">
-        {#each garbageList as garbage (garbage.id)}
-            <div
-                data-garbageID="{garbage.id}"
-                use:dndzone={{items: garbage.items, flipDurationMs, dragDisabled: true}}
-                on:consider={(e) => handleGarbageItems(garbage.id, e)}
-                on:finalize={(e) => handleGarbageItems(garbage.id, e)}
-            >
-                {#each garbage.items as garbageItem (garbageItem.id)}
-                    <Section>
-                        {garbageItem.name}
-                    </Section>
-                {/each}
-            </div>
-        {/each}
+            {#each garbageList as garbage (garbage.id)}
+                <div
+                    data-garbageID="{garbage.id}"
+                    use:dndzone={{items: garbage.items, flipDurationMs, dragDisabled: true}}
+                    on:consider={(e) => handleGarbageItems(garbage.id, e)}
+                    on:finalize={(e) => handleGarbageItems(garbage.id, e)}
+                >
+                    {#each garbage.items as garbageItem (garbageItem.id)}
+                        <Section>
+                            {garbageItem.name}
+                        </Section>
+                    {/each}
+                </div>
+            {/each}
         </div>
     </main>
 {/if}
@@ -139,7 +199,7 @@
     main {
         text-align: center;
         padding: 1em;
-        max-width: 240px;
+        /*max-width: 240px; // NOTE: Not sure if we should keep this */
         margin: 0 auto;
     }
 
@@ -150,48 +210,53 @@
         font-weight: 100;
     }
     .itemContainer {
-        /**/
-        width: 50vw;
+        width: var(--item-size-padded);
+        height: var(--item-size-padded);
         text-align: center;
         overflow: hidden;
         margin: 0 auto;
-        /**/
     }
-    .itemCarousel {
-        /*display: flex;*/
-        /*flex-direction: row;*/
-        /*justify-content: space-between;*/
-        /*overflow: scroll;*/
 
-        /**/display: flex;
-        /*overflow-x: auto;*/
+    .itemCarousel {
+        width: calc(var(--item-size-padded) * var(--total-item-qty));
+        height: var(--item-size-padded);
+        padding-left: calc(var(--item-padding) / 2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
         -webkit-overflow-scrolling: touch;
-        /*// scroll-snap-points-x: repeat(300px);*/
-        /*// scroll-snap-type: mandatory;*/
-        /**/
+    }
+    .itemCarousel .emptyItems {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: var(--item-size);
+        height: var(--item-size);
     }
     .garbageContainer {
         display: flex;
         flex-direction: row;
-        width: 50vw;
+        width: calc((var(--item-size-padded) + var(--garbage-spacing)) * var(--total-garbage-qty));
+        height: var(--item-size-padded);
         justify-content: space-between;
         margin: 0 auto;
     }
     .garbageContainer > div:before {
         content: attr(data-garbageID);
         background-color: red;
-        width: 100%;
-        height: 2rem;
+        width: var(--item-size-padded);
+        height: var(--item-size-padded);
         display: block;
     }
     .garbageContainer > div {
         background-color: gray;
         color: white;
-        overflow: scroll;
-        height: 5rem;
-        width: 100%;
+        width: var(--item-size-padded);
+        height: var(--item-size-padded);
+        display: block;
     }
 
     @media (min-width: 640px) {

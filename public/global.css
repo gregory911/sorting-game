@@ -1,6 +1,8 @@
 :root {
 	--color-bg: green;
 	--color-on-bg: white;
+	/*--item-size: 10rem;*/
+	/*--item-padding: 0.5rem;*/
 }
 html, body {
 	position: relative;
