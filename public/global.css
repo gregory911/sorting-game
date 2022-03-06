@@ -1,6 +1,8 @@
 :root {
 	--color-bg: green;
 	--color-on-bg: white;
+	--dark-bg: rgba(0,0,0,0.6);
+	--label-radius: 0 0 0.9rem 0.9rem;
 	/*--item-size: 10rem;*/
 	/*--item-padding: 0.5rem;*/
 }

@@ -5,7 +5,7 @@
     _,
     isLoading,
   } from 'svelte-i18n';
-  import GarbageItemList from './components/garbageItemList.svelte';
+  import GarbageItem from './components/garbageItem.svelte';
   import { GarbageData} from "./data/garbageData";
 
   const flipDurationMs = 200;
@@ -76,7 +76,9 @@
                         <p>No more items</p>
                     </div>
                 {:else}
-                    <GarbageItemList itemList="{garbageItems}"/>
+                    {#each garbageItems as garbageItem (garbageItem.id)}
+                        <GarbageItem garbageItemID={garbageItem.id}/>
+                    {/each}
                 {/if}
             </div>
         </div>
@@ -90,7 +92,9 @@
                     on:consider={(e) => handleGarbageItems(garbage.id, e)}
                     on:finalize={(e) => handleGarbageItems(garbage.id, e)}
                 >
-                    <GarbageItemList itemList="{garbage.items}"/>
+                    {#each garbage.items as garbageItem (garbageItem.id)}
+                        <GarbageItem garbageItemID={garbageItem.id}/>
+                    {/each}
                 </div>
             {/each}
         </div>
@@ -145,6 +149,8 @@
         height: var(--item-size-padded);
         justify-content: space-between;
         margin: 0 auto;
+        overflow: hidden;
+        margin-top: 2rem;
     }
     .garbageContainer > div:before,
     .garbageContainer > div:after {
@@ -168,18 +174,20 @@
     }
     .garbageContainer > div:after {
         content: attr(data-garbageName);
-        background-color: red;
+        background: var(--dark-bg);
         position: absolute;
         bottom: 0;
         height: auto;
+        border-radius: var(--label-radius);
     }
     .garbageContainer > div {
-        background-color: gray;
         color: white;
         width: var(--item-size-padded);
         height: var(--item-size-padded);
         display: block;
         position: relative;
+        border-radius: 1rem;
+        border: 1px solid var(--dark-bg);
     }
 
     @media (min-width: 640px) {
