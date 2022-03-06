@@ -4,5 +4,17 @@
   },
   "hello": "Hello {name}",
   "username": "Username",
-  "componentExample": "This is a section component"
+  "componentExample": "This is a section component",
+  "garbage": {
+    "collecteurs": "Collectors",
+    "compost": "Compost",
+    "decheterie": "Dump",
+    "poubelle_bleue": "Glass & Metal bin",
+    "poubelle_dechets": "Trash bin",
+    "poubelle_jaune": "Paper bin",
+    "poubelle_verte": "Recycling bin"
+  },
+  "garbageItem": {
+
+  }
 }

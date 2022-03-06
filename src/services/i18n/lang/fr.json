@@ -4,5 +4,32 @@
   },
   "appTitle": "App Triage",
   "username": "Nom d'utilisateur",
-  "componentExample": "Ceci est une composante de type section"
+  "componentExample": "Ceci est une composante de type section",
+  "garbage": {
+    "collecteurs": "Collecteurs",
+    "compost": "Composte",
+    "decheterie": "Décheterie",
+    "poubelle_bleue": "Poubelle bleue",
+    "poubelle_dechets": "Poubelle déchets",
+    "poubelle_jaune": "Poubelle jaune",
+    "poubelle_verte": "Recycling bin"
+  },
+  "garbageItem": {
+    "aerosols": "Aérosols",
+    "agenda": "Agenda",
+    "ampoule": "Ampoules",
+    "annuaire": "Annuaire",
+    "baril_lessive": "Baril de lessive",
+    "barquette_alimentaire": "Barquette alimentaire",
+    "barquette_aluminium": "Barquette aluminium",
+    "barquette_beurre": "Barquette beurre",
+    "batterie": "Batterie",
+    "bidon_lessive": "Bidon de lessive",
+    "bidon_sirop": "Bidon de sirop",
+    "bocal_cornichons": "Bocal de cornichons",
+    "bocal_verre": "Bocal de verre",
+    "boite_conserve": "Boîte de conserve",
+    "boite_fromage_bois": "Boîte de fromage en bois"
+  }
 }
+

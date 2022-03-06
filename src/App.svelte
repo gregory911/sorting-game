@@ -5,102 +5,11 @@
     _,
     isLoading,
   } from 'svelte-i18n';
-  import Section from './components/landing/section.svelte';
+  import GarbageItemList from './components/garbageItemList.svelte';
+  import { GarbageData} from "./data/garbageData";
 
   const flipDurationMs = 200;
-  let garbages = {
-    "garbage1": {
-      "id": "garbage1",
-      "name": "garbage1",
-      "items": [
-        {
-          "id": "item1",
-          "name": "Item1-Garbage1",
-        },
-        {
-          "id": "item2",
-          "name": "Item2-Garbage1",
-        },
-        {
-          "id": "item3",
-          "name": "Item3-Garbage1",
-        },
-      ],
-    },
-    "garbage2": {
-      "id": "garbage2",
-      "name": "garbage2",
-      "items": [
-        {
-          "id": "item4",
-          "name": "Item1-Garbage2",
-        },
-        {
-          "id": "item5",
-          "name": "Item2-Garbage2",
-        },
-        {
-          "id": "item6",
-          "name": "Item3-Garbage2",
-        },
-      ],
-    },
-    "garbage3": {
-      "id": "garbage3",
-      "name": "garbage3",
-      "items": [
-        {
-          "id": "item7",
-          "name": "Item1-Garbage3",
-        },
-        {
-          "id": "item8",
-          "name": "Item2-Garbage3",
-        },
-        {
-          "id": "item9",
-          "name": "Item3-Garbage3",
-        },
-      ],
-    },
-    "garbage4": {
-      "id": "garbage4",
-      "name": "garbage4",
-      "items": [
-        {
-          "id": "item10",
-          "name": "Item1-Garbage4",
-        },
-        {
-          "id": "item11",
-          "name": "Item2-Garbage4",
-        },
-        {
-          "id": "item12",
-          "name": "Item3-Garbage4",
-        },
-      ],
-    },
-    "garbage5": {
-      "id": "garbage5",
-      "name": "garbage5",
-      "items": [
-        {
-          "id": "item14",
-          "name": "Item1-garbage5",
-        },
-        {
-          "id": "item15",
-          "name": "Item2-garbage5",
-        },
-        {
-          "id": "item16",
-          "name": "Item3-garbage5",
-        },
-      ],
-    },
-  };
-  let garbageList = Object.values(garbages).map(
+  let garbageList = Object.values(GarbageData).map(
     (garbage) => {
       return {
         id: garbage.id,
@@ -108,11 +17,11 @@
       };
     }
   );
-  let garbageItems = Object.values(garbages).map((garbage) => {
+  let garbageItems = Object.values(GarbageData).map((garbage) => {
     return garbage.items;
   }).flat();
 
-  const totalGarbageQty = Object.keys(garbages).length,
+  const totalGarbageQty = Object.keys(GarbageData).length,
         totalItemQty = garbageItems.length,
         itemSize = '70vw',
         itemPadding = '0.5rem',
@@ -129,7 +38,6 @@
   $: cssVarStyles = Object.entries(styles)
     .map(([key, value]) => `--${key}:${value}`)
     .join(';');
-  // $: cssVarStyles = `--total-item-qty:${garbageItems.length};`;
   console.log('TEST ITEMS', garbageList, garbageItems, );
 
   const handleGarbageItems = (gid, e) => {
@@ -143,13 +51,13 @@
     // );
     garbageList[garbageIdx].items = e.detail.items;
     garbageList = [...garbageList];
-    console.log('UPDATED GARBAGE LIST', garbageList, garbages);
+    console.log('UPDATED GARBAGE LIST', garbageList, GarbageData);
   }
   function handleItems(e) {
     // console.log('HANDLING ITEMS', e, e.detail);
     // console.log('TEST DETAIL ITEMS', e.detail.items ? 'GOT ITEMS' : 'NO ITEMS');
     garbageItems = [...e.detail.items];
-    console.log('UPDATED ITEMS LIST', garbageItems, garbages);
+    console.log('UPDATED ITEMS LIST', garbageItems, GarbageData);
   }
 </script>
 
@@ -168,11 +76,7 @@
                         <p>No more items</p>
                     </div>
                 {:else}
-                    {#each garbageItems as garbageItem (garbageItem.id)}
-                        <Section>
-                            {garbageItem.name}
-                        </Section>
-                    {/each}
+                    <GarbageItemList itemList="{garbageItems}"/>
                 {/if}
             </div>
         </div>
@@ -180,15 +84,13 @@
             {#each garbageList as garbage (garbage.id)}
                 <div
                     data-garbageID="{garbage.id}"
+                    data-garbageName="{$_('garbage.' + garbage.id)}"
+                    style="--garbageImageUrl: url('/images/poubelles/{garbage.id}.JPG')"
                     use:dndzone={{items: garbage.items, flipDurationMs, dragDisabled: true}}
                     on:consider={(e) => handleGarbageItems(garbage.id, e)}
                     on:finalize={(e) => handleGarbageItems(garbage.id, e)}
                 >
-                    {#each garbage.items as garbageItem (garbageItem.id)}
-                        <Section>
-                            {garbageItem.name}
-                        </Section>
-                    {/each}
+                    <GarbageItemList itemList="{garbage.items}"/>
                 </div>
             {/each}
         </div>
@@ -244,12 +146,32 @@
         justify-content: space-between;
         margin: 0 auto;
     }
+    .garbageContainer > div:before,
+    .garbageContainer > div:after {
+        --garbageContainerPadding: 1rem;
+        --garbagePaddingHorizontal: calc(var(--garbageContainerPadding) * 2);
+        --garbageBoxSize: calc(var(--item-size-padded) - var(--garbagePaddingHorizontal));
+        content: "";
+        padding: var(--garbageContainerPadding);
+        width: var(--garbageBoxSize);
+        height: var(--garbageBoxSize);
+        display: flex;
+        justify-content: center;
+        align-items: end;
+    }
     .garbageContainer > div:before {
-        content: attr(data-garbageID);
+        background-image: var(--garbageImageUrl);
+        background-origin: content-box;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+    .garbageContainer > div:after {
+        content: attr(data-garbageName);
         background-color: red;
-        width: var(--item-size-padded);
-        height: var(--item-size-padded);
-        display: block;
+        position: absolute;
+        bottom: 0;
+        height: auto;
     }
     .garbageContainer > div {
         background-color: gray;
@@ -257,6 +179,7 @@
         width: var(--item-size-padded);
         height: var(--item-size-padded);
         display: block;
+        position: relative;
     }
 
     @media (min-width: 640px) {
