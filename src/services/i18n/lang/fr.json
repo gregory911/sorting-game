@@ -5,6 +5,10 @@
   "appTitle": "App Triage",
   "username": "Nom d'utilisateur",
   "componentExample": "Ceci est une composante de type section",
+  "actions": {
+    "show_results": "Corriger",
+    "reset": "Recommencer"
+  },
   "garbage": {
     "collecteurs": "Collecteurs",
     "compost": "Composte",

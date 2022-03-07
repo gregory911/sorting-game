@@ -5,6 +5,10 @@
   "hello": "Hello {name}",
   "username": "Username",
   "componentExample": "This is a section component",
+  "actions": {
+    "show_results": "Show results",
+    "reset": "Reset"
+  },
   "garbage": {
     "collecteurs": "Collectors",
     "compost": "Compost",

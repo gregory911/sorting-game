@@ -2,9 +2,11 @@
 	--color-bg: green;
 	--color-on-bg: white;
 	--dark-bg: rgba(0,0,0,0.6);
-	--label-radius: 0 0 0.9rem 0.9rem;
-	/*--item-size: 10rem;*/
-	/*--item-padding: 0.5rem;*/
+	--pseudo-element-radius: 0.9rem;
+	--label-radius: 0 0 var(--pseudo-element-radius) var(--pseudo-element-radius);
+	--validation-green: #2ea84a; /*rgb(46,168,74);*/
+	--validation-red: #df1e2c; /*rgb(223,30,44);*/
+	--button-selected-shadow: 0 0 9px inset #333333;
 }
 html, body {
 	position: relative;
@@ -64,7 +66,8 @@ button:disabled {
 }
 
 button:not(:disabled):active {
-	background-color: #ddd;
+	/*background-color: #ddd;*/
+	box-shadow: var(--button-selected-shadow);
 }
 
 button:focus {

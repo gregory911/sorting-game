@@ -1,5 +1,7 @@
 <script lang="ts">
   import { dndzone } from 'svelte-dnd-action';
+  import Fa from 'svelte-fa'
+  import { faUserCheck } from '@fortawesome/free-solid-svg-icons'
   import './services/i18n/i18n';
   import {
     _,
@@ -9,17 +11,24 @@
   import { GarbageData} from "./data/garbageData";
 
   const flipDurationMs = 200;
-  let garbageList = Object.values(GarbageData).map(
-    (garbage) => {
-      return {
-        id: garbage.id,
-        items: []
-      };
-    }
-  );
-  let garbageItems = Object.values(GarbageData).map((garbage) => {
-    return garbage.items;
-  }).flat();
+  let garbageList, garbageItems;
+  const initData = () => {
+    console.log("INIT DATA");
+    garbageList = Object.values(GarbageData).map(
+      (garbage) => {
+        return {
+          id: garbage.id,
+          active: false,
+          items: []
+        };
+      }
+    );
+    garbageItems = Object.values(GarbageData).map((garbage) => {
+      return garbage.items;
+    }).flat();
+  };
+
+  initData();
 
   const totalGarbageQty = Object.keys(GarbageData).length,
         totalItemQty = garbageItems.length,
@@ -38,7 +47,7 @@
   $: cssVarStyles = Object.entries(styles)
     .map(([key, value]) => `--${key}:${value}`)
     .join(';');
-  console.log('TEST ITEMS', garbageList, garbageItems, );
+  console.log('TEST ITEMS', garbageList, garbageItems);
 
   const handleGarbageItems = (gid, e) => {
     // console.log('HANDLING GARBAGE ITEMS', e, e.detail, e.detail.items ? 'GOT GARBAGE ITEMS' : 'NO GARBAGE ITEMS');
@@ -53,12 +62,18 @@
     garbageList = [...garbageList];
     console.log('UPDATED GARBAGE LIST', garbageList, GarbageData);
   }
-  function handleItems(e) {
+  const handleItems = (e) => {
     // console.log('HANDLING ITEMS', e, e.detail);
     // console.log('TEST DETAIL ITEMS', e.detail.items ? 'GOT ITEMS' : 'NO ITEMS');
     garbageItems = [...e.detail.items];
     console.log('UPDATED ITEMS LIST', garbageItems, GarbageData);
   }
+  const expandGarbage = (garbageID: string) => {
+    const garbageIndex = garbageList.findIndex((garbage) => garbage.id === garbageID);
+    garbageList[garbageIndex].active = !garbageList[garbageIndex].active;
+    console.log("Extending garbage content", garbageID, garbageList);
+  }
+
 </script>
 
 {#if $isLoading}
@@ -66,6 +81,7 @@
 {:else}
     <main style="{cssVarStyles}">
         <h1>{$_('appTitle')}</h1>
+        <button on:click={initData}>{$_('actions.reset')}</button>
         <div class="itemContainer">
             <div
                 class="itemCarousel"
@@ -84,17 +100,25 @@
         </div>
         <div class="garbageContainer">
             {#each garbageList as garbage (garbage.id)}
-                <div
-                    data-garbageID="{garbage.id}"
-                    data-garbageName="{$_('garbage.' + garbage.id)}"
-                    style="--garbageImageUrl: url('/images/poubelles/{garbage.id}.JPG')"
-                    use:dndzone={{items: garbage.items, flipDurationMs, dragDisabled: true}}
-                    on:consider={(e) => handleGarbageItems(garbage.id, e)}
-                    on:finalize={(e) => handleGarbageItems(garbage.id, e)}
-                >
-                    {#each garbage.items as garbageItem (garbageItem.id)}
-                        <GarbageItem garbageItemID={garbageItem.id}/>
-                    {/each}
+                <div class="col">
+                    <button on:click={() => expandGarbage(garbage.id)} class:active={garbage.active}>
+                        <span>{$_('actions.show_results')}</span>
+                        <Fa icon={faUserCheck} size="2x"/>
+                    </button>
+                    <div
+                        data-garbageID="{garbage.id}"
+                        data-garbageName="{$_('garbage.' + garbage.id)}"
+                        class="garbage"
+                        class:active={garbage.active}
+                        style="--garbageImageUrl: url('/images/poubelles/{garbage.id}.JPG')"
+                        use:dndzone={{items: garbage.items, flipDurationMs, dragDisabled: true}}
+                        on:consider={(e) => handleGarbageItems(garbage.id, e)}
+                        on:finalize={(e) => handleGarbageItems(garbage.id, e)}
+                    >
+                        {#each garbage.items as garbageItem (garbageItem.id)}
+                            <GarbageItem garbageItemID={garbageItem.id}/>
+                        {/each}
+                    </div>
                 </div>
             {/each}
         </div>
@@ -146,14 +170,49 @@
         display: flex;
         flex-direction: row;
         width: calc((var(--item-size-padded) + var(--garbage-spacing)) * var(--total-garbage-qty));
-        height: var(--item-size-padded);
         justify-content: space-between;
         margin: 0 auto;
-        overflow: hidden;
         margin-top: 2rem;
     }
-    .garbageContainer > div:before,
-    .garbageContainer > div:after {
+    .garbageContainer .col {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        align-items: center;
+        height: auto;
+        max-height: calc(var(--item-size-padded) + 5rem);
+    }
+    .garbageContainer .col > button {
+        background-color: var(--validation-green);
+        color: white;
+        border: none;
+        cursor: pointer;
+        height: 3.5rem;
+        width: auto;
+        box-shadow: 0 0 3px #333333;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 0.3rem 1rem;
+        border-radius: 0.5rem;
+    }
+    .garbageContainer .col > button:active,
+    .garbageContainer .col > button.active{
+        box-shadow: 0 0 3px var(--validation-green), var(--button-selected-shadow);
+    }
+    .garbageContainer .col > button span {
+        margin-right: 0.75rem;
+    }
+    .garbageContainer .garbage {
+        color: white;
+        width: var(--item-size-padded);
+        height: auto;
+        display: block;
+        position: relative;
+    }
+    .garbageContainer .garbage:before,
+    .garbageContainer .garbage:after {
         --garbageContainerPadding: 1rem;
         --garbagePaddingHorizontal: calc(var(--garbageContainerPadding) * 2);
         --garbageBoxSize: calc(var(--item-size-padded) - var(--garbagePaddingHorizontal));
@@ -165,29 +224,23 @@
         justify-content: center;
         align-items: end;
     }
-    .garbageContainer > div:before {
+    .garbageContainer .garbage:before {
         background-image: var(--garbageImageUrl);
         background-origin: content-box;
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
+        padding: calc(var(--garbageContainerPadding) - 1px);
+        border-radius: var(--pseudo-element-radius);
+        border: 1px solid var(--dark-bg);
     }
-    .garbageContainer > div:after {
+    .garbageContainer .garbage:after {
         content: attr(data-garbageName);
         background: var(--dark-bg);
         position: absolute;
-        bottom: 0;
+        top: calc(var(--item-size-padded) - 3.2rem);
         height: auto;
         border-radius: var(--label-radius);
-    }
-    .garbageContainer > div {
-        color: white;
-        width: var(--item-size-padded);
-        height: var(--item-size-padded);
-        display: block;
-        position: relative;
-        border-radius: 1rem;
-        border: 1px solid var(--dark-bg);
     }
 
     @media (min-width: 640px) {
