@@ -2,6 +2,7 @@
   import { dndzone } from 'svelte-dnd-action';
   import Fa from 'svelte-fa'
   import { faUserCheck } from '@fortawesome/free-solid-svg-icons'
+  import * as animateScroll from "svelte-scrollto";
   import './services/i18n/i18n';
   import {
     _,
@@ -72,6 +73,11 @@
     const garbageIndex = garbageList.findIndex((garbage) => garbage.id === garbageID);
     garbageList[garbageIndex].active = !garbageList[garbageIndex].active;
     console.log("Extending garbage content", garbageID, garbageList);
+    if (garbageList[garbageIndex].active) {
+      animateScroll.scrollTo({element: `#col-${garbageID}`});
+    } else {
+      animateScroll.scrollTo({element: '#app-title'});
+    }
   }
 
 </script>
@@ -80,7 +86,7 @@
     Please wait...
 {:else}
     <main style="{cssVarStyles}">
-        <h1>{$_('appTitle')}</h1>
+        <h1 id="app-title">{$_('appTitle')}</h1>
         <button on:click={initData}>{$_('actions.reset')}</button>
         <div class="itemContainer">
             <div
@@ -100,8 +106,8 @@
         </div>
         <div class="garbageContainer">
             {#each garbageList as garbage (garbage.id)}
-                <div class="col">
-                    <button on:click={() => expandGarbage(garbage.id)} class:active={garbage.active}>
+                <div id="col-{garbage.id}" class="col" class:active={garbage.active}>
+                    <button type="button" disabled={garbage.items.length === 0} on:click={() => expandGarbage(garbage.id)} class:active={garbage.active}>
                         <span>{$_('actions.show_results')}</span>
                         <Fa icon={faUserCheck} size="2x"/>
                     </button>
@@ -109,7 +115,6 @@
                         data-garbageID="{garbage.id}"
                         data-garbageName="{$_('garbage.' + garbage.id)}"
                         class="garbage"
-                        class:active={garbage.active}
                         style="--garbageImageUrl: url('/images/poubelles/{garbage.id}.JPG')"
                         use:dndzone={{items: garbage.items, flipDurationMs, dragDisabled: true}}
                         on:consider={(e) => handleGarbageItems(garbage.id, e)}
@@ -180,26 +185,34 @@
         overflow: hidden;
         align-items: center;
         height: auto;
-        max-height: calc(var(--item-size-padded) + 5rem);
+        max-height: calc(var(--item-size-padded) + 4rem);
+        transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+    }
+    .garbageContainer .col.active {
+        max-height: 10000px;
+        transition: max-height 1s ease-in-out;
     }
     .garbageContainer .col > button {
         background-color: var(--validation-green);
         color: white;
         border: none;
         cursor: pointer;
-        height: 3.5rem;
         width: auto;
         box-shadow: 0 0 3px #333333;
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        padding: 0.3rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.5rem;
     }
     .garbageContainer .col > button:active,
-    .garbageContainer .col > button.active{
+    .garbageContainer .col > button.active {
         box-shadow: 0 0 3px var(--validation-green), var(--button-selected-shadow);
+    }
+    .garbageContainer .col > button:disabled {
+        opacity: 60%;
+        cursor: not-allowed;
     }
     .garbageContainer .col > button span {
         margin-right: 0.75rem;
