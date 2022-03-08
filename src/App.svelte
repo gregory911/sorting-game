@@ -87,7 +87,7 @@
 {:else}
     <main style="{cssVarStyles}">
         <h1 id="app-title">{$_('appTitle')}</h1>
-        <button on:click={initData}>{$_('actions.reset')}</button>
+        <button disabled="{garbageItems.length > 0}" on:click={initData}>{$_('actions.reset')}</button>
         <div class="itemContainer">
             <div
                 class="itemCarousel"
