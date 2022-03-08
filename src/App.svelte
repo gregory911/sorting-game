@@ -121,7 +121,7 @@
                         on:finalize={(e) => handleGarbageItems(garbage.id, e)}
                     >
                         {#each garbage.items as garbageItem (garbageItem.id)}
-                            <GarbageItem garbageItemID={garbageItem.id}/>
+                            <GarbageItem isChild="true" garbageItemID={garbageItem.id}/>
                         {/each}
                     </div>
                 </div>
