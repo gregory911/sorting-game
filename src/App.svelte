@@ -82,6 +82,12 @@
 
 </script>
 
+<svelte:head>
+    <title>App Triage</title>
+    <meta name="robots" content="noindex nofollow" />
+    <html lang="fr" />
+</svelte:head>
+
 {#if $isLoading}
     Please wait...
 {:else}
