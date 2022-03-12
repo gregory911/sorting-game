@@ -172,10 +172,10 @@
 
     h1 {
         font-family: 'Caveat Brush', cursive;
-        color: #ff3e00;
+        color: rgb(255 235 0);
         font-size: 4em;
         font-weight: 100;
-        text-shadow: 1px 1px #333;
+        text-shadow: 0px 0px 5px #333;
     }
     .itemContainer {
         width: var(--item-size-padded);
