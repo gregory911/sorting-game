@@ -30,6 +30,9 @@ export const GarbageData = {
         "id": "tel_portable"
       },
       {
+        "id": "torchon_dechire"
+      },
+      {
         "id": "vetements"
       },
     ],
@@ -170,9 +173,6 @@ export const GarbageData = {
       },
       {
         "id": "papier_bonbon"
-      },
-      {
-        "id": "papier_cadeau"
       },
       {
         "id": "papier_photo"
@@ -379,6 +379,9 @@ export const GarbageData = {
         "id": "flacon_shampoing"
       },
       {
+        "id": "guirlande_papier"
+      },
+      {
         "id": "mousse_raser"
       },
       {
@@ -386,6 +389,9 @@ export const GarbageData = {
       },
       {
         "id": "paquet_cereales"
+      },
+      {
+        "id": "papier_cadeau"
       },
       {
         "id": "plat_aluminium"
