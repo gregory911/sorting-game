@@ -2,6 +2,8 @@
 	--color-bg: green;
 	--color-on-bg: white;
 	--dark-bg: rgba(0,0,0,0.6);
+	--invalid-bg: rgba(223,30,44,0.8);
+	--valid-bg: rgba(46,168,74,0.8);
 	--pseudo-element-radius: 0.9rem;
 	--label-radius: 0 0 var(--pseudo-element-radius) var(--pseudo-element-radius);
 	--validation-green: #2ea84a; /*rgb(46,168,74);*/
@@ -16,6 +18,11 @@ html, body {
 }
 
 body {
+	background-image: url(images/bg.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	background-attachment: fixed;
 	color: #333;
 	margin: 0;
 	padding: 8px;

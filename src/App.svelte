@@ -9,7 +9,8 @@
     isLoading,
   } from 'svelte-i18n';
   import GarbageItem from './components/garbageItem.svelte';
-  import { GarbageData} from "./data/garbageData";
+  // import { GarbageData} from "./data/garbageData";
+  import { GarbageData} from "./data/garbageData-small";
 
   const flipDurationMs = 200;
   let garbageList, garbageItems;
@@ -60,6 +61,7 @@
     //   garbageList[garbageIdx].items ? 'FOUND GARBAGE ITEMS' : 'NO GARBAGE ITEMS FOUND'
     // );
     garbageList[garbageIdx].items = e.detail.items;
+    garbageList[garbageIdx].active = false;
     garbageList = [...garbageList];
     console.log('UPDATED GARBAGE LIST', garbageList, GarbageData);
   }
@@ -70,9 +72,26 @@
     console.log('UPDATED ITEMS LIST', garbageItems, GarbageData);
   }
   const expandGarbage = (garbageID: string) => {
+    // Get Garbage index
     const garbageIndex = garbageList.findIndex((garbage) => garbage.id === garbageID);
+
+    // Correct garbage items
+    for (let garbageItem: any of garbageList[garbageIndex].items) {
+      garbageItem.valid = false;
+      const match = GarbageData[garbageID].items.find((refItem) => {
+        console.log('Test item', `${refItem.id} === ${garbageItem.id}`, refItem.id === garbageItem.id);
+        return refItem.id === garbageItem.id;
+      });
+      garbageItem.valid = (!!match).toString();
+      console.log('CORRECT GARBAGE ITEMS', garbageItem, match);
+    }
+    console.log('CHECK IF ITEMS ARE VALID\n', garbageList[garbageIndex].items);
+
+    // Toggle active state on Garbage
     garbageList[garbageIndex].active = !garbageList[garbageIndex].active;
     console.log("Extending garbage content", garbageID, garbageList);
+
+    // Scroll to position
     if (garbageList[garbageIndex].active) {
       animateScroll.scrollTo({element: `#col-${garbageID}`});
     } else {
@@ -83,9 +102,16 @@
 </script>
 
 <svelte:head>
-    <title>App Triage</title>
+    <title>Clic Je Recycle par Reflets</title>
     <meta name="robots" content="noindex nofollow" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Idée originale: Catherine Lacourt / Développement: Grégory Gégoux">
+    <meta name="description" content="Jeu de tri des rebuts domestiques pour l'équipe Reflets">
     <html lang="fr" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
 </svelte:head>
 
 {#if $isLoading}
@@ -101,11 +127,11 @@
             >
                 {#if (!garbageItems.length)}
                     <div class="emptyItems">
-                        <p>No more items</p>
+                        <p>{$_('itemsVides')}</p>
                     </div>
                 {:else}
                     {#each garbageItems as garbageItem (garbageItem.id)}
-                        <GarbageItem garbageItemID={garbageItem.id}/>
+                        <GarbageItem isChild="false" isValid="false" garbageItemID={garbageItem.id}/>
                     {/each}
                 {/if}
             </div>
@@ -127,7 +153,7 @@
                         on:finalize={(e) => handleGarbageItems(garbage.id, e)}
                     >
                         {#each garbage.items as garbageItem (garbageItem.id)}
-                            <GarbageItem isChild="true" garbageItemID={garbageItem.id}/>
+                            <GarbageItem isChild="true" isValid="{garbageItem.valid}" garbageItemID={garbageItem.id}/>
                         {/each}
                     </div>
                 </div>
@@ -145,10 +171,11 @@
     }
 
     h1 {
+        font-family: 'Caveat Brush', cursive;
         color: #ff3e00;
-        text-transform: uppercase;
         font-size: 4em;
         font-weight: 100;
+        text-shadow: 1px 1px #333;
     }
     .itemContainer {
         width: var(--item-size-padded);
@@ -170,12 +197,23 @@
         -webkit-overflow-scrolling: touch;
     }
     .itemCarousel .emptyItems {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         width: var(--item-size);
         height: var(--item-size);
+        background: rgba(255,255,255,0.8);
+        border-radius: 2rem;
+        border: 3px dashed #333;
+        font-family: 'Caveat Brush', cursive;
+        font-size: 1.8rem;
+    }
+    .itemCarousel .emptyItems p {
+        padding: 1rem;
     }
     .garbageContainer {
         display: flex;
@@ -204,7 +242,7 @@
         border: none;
         cursor: pointer;
         width: auto;
-        box-shadow: 0 0 3px #333333;
+        box-shadow: 1px 1px 3px #333333;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -219,6 +257,7 @@
     .garbageContainer .col > button:disabled {
         opacity: 60%;
         cursor: not-allowed;
+        box-shadow: 0 0 3px var(--button-selected-shadow);
     }
     .garbageContainer .col > button span {
         margin-right: 0.75rem;
@@ -244,6 +283,7 @@
         align-items: end;
     }
     .garbageContainer .garbage:before {
+        background-color: white;
         background-image: var(--garbageImageUrl);
         background-origin: content-box;
         background-position: center;

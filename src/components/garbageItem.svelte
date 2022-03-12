@@ -3,11 +3,12 @@
   import { _ } from 'svelte-i18n';
 
   export let garbageItemID: string;
-  export let isChild: boolean;
-  console.log("Test Garbage Item ID", garbageItemID);
+  export let isChild: string;
+  export let isValid: string;
+  console.log("Test Garbage Item ID", garbageItemID, isValid, typeof isValid);
   let isPlaceholder = garbageItemID.indexOf('dnd-shadow-placeholder') >= 0;
 </script>
-<div class:garbage-item={isChild}>
+<div class:garbage-item={isChild === 'true'} class:valid={isValid === 'true'}>
     {#if (!isPlaceholder)}
         <img src="images/dechets/{garbageItemID}.JPG" alt="{$_('garbageItem.' + garbageItemID)}"/>
         <p>{$_('garbageItem.' + garbageItemID)}</p>
@@ -21,6 +22,7 @@
         --itemBoxSize: calc(var(--item-size) - var(--itemBoxPaddingHorizontal));
         align-items: center;
         /*background-color: var(--color-bg);*/
+        background-color: white;
         color: var(--color-on-bg);
         display: flex;
         flex-shrink: 0;
@@ -52,14 +54,20 @@
         border-radius: var(--label-radius);
     }
     div.garbage-item {
-        width: calc((var(--itemBoxSize) / 3) - 1rem);
-        height: calc((var(--itemBoxSize) / 3) - 1rem);
+        /*width: calc((var(--itemBoxSize) / 3) - 1rem);*/
+        /*height: calc((var(--itemBoxSize) / 3) - 1rem);*/
         display: inline-block;
-        margin: 1rem 1rem 0 0;
+        /*margin: 1rem 1rem 0 0;*/
+        margin: 0;
+        margin-top: 1rem;
     }
     div.garbage-item p {
-        width: calc(100% - 2px);
-        padding: 0.15rem;
+        background-color: var(--invalid-bg);
+        /*width: calc(100% - 2px);*/
+        /*padding: 0.15rem;*/
         margin-left: -1rem;
+    }
+    div.garbage-item.valid p {
+        background-color: var(--valid-bg);
     }
 </style>
