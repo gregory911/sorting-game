@@ -10,6 +10,7 @@
   } from 'svelte-i18n';
   import GarbageItem from './components/garbageItem.svelte';
   import { GarbageData} from "./data/garbageData";
+  import {FYShuffle} from "./services/FYShuffle";
 
   const flipDurationMs = 200;
   let garbageList, garbageItems;
@@ -24,13 +25,11 @@
         };
       }
     );
+    // Flatten the items from all garbages and sort them randomly
     garbageItems = Object.values(GarbageData).map((garbage) => {
       return garbage.items;
-    }).flat().sort((a, b) => {
-      var textA = a.id.toUpperCase();
-      var textB = b.id.toUpperCase();
-      return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-    });
+    }).flat();
+    FYShuffle(garbageItems);
   };
 
   initData();
